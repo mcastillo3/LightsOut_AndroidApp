@@ -6,12 +6,14 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
     private LightsOutGame mGame;
+    private final String GAME_STATE = "gameState";
     private GridLayout mLightGrid;
     private int mLightOnColor;
     private int mLightOffColor;
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
             gridButton.setOnClickListener(this::onLightButtonClick);
         }
 
-        // Add a secret "cheat" method to allow user to win game
+        // Add a secret "cheat" method click handler to allow user to win game
         mLightGrid.getChildAt(0).setOnLongClickListener(view -> {
             mGame.cheat();
             setButtonColors();
@@ -44,7 +46,21 @@ public class MainActivity extends AppCompatActivity {
         mLightOffColor = ContextCompat.getColor(this, R.color.black);
 
         mGame = new LightsOutGame();
-        startGame();
+
+        // Check if game state already exists when device is rotated
+        if (savedInstanceState == null) {
+            startGame();
+        } else {
+            String gameState = savedInstanceState.getString(GAME_STATE);
+            mGame.setState(gameState);
+            setButtonColors();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(GAME_STATE, mGame.getState());
     }
 
     private void startGame() {

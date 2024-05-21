@@ -1,6 +1,7 @@
 package com.android.lightsout;
 
 import java.util.Random;
+import java.util.zip.GZIPInputStream;
 
 public class LightsOutGame {
     public static final int GRID_SIZE = 3;
@@ -17,6 +18,27 @@ public class LightsOutGame {
         for (int row = 0; row < GRID_SIZE; row++) {
             for (int col = 0; col < GRID_SIZE; col++) {
                 mLightsGrid[row][col] = randomNumGen.nextBoolean();
+            }
+        }
+    }
+
+    public String getState() {
+        StringBuilder boardString = new StringBuilder();
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
+                char value = mLightsGrid[row][col] ? 'T' : 'F';
+                boardString.append(value);
+            }
+        }
+        return boardString.toString();
+    }
+
+    public void setState(String gameState) {
+        int index = 0;
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
+                mLightsGrid[row][col] = gameState.charAt(index) == 'T';
+                index++;
             }
         }
     }
