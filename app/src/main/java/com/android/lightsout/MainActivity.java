@@ -30,6 +30,16 @@ public class MainActivity extends AppCompatActivity {
             gridButton.setOnClickListener(this::onLightButtonClick);
         }
 
+        // Add a secret "cheat" method to allow user to win game
+        mLightGrid.getChildAt(0).setOnLongClickListener(view -> {
+            mGame.cheat();
+            setButtonColors();
+            if (mGame.isGameOver()) {
+                Toast.makeText(this, R.string.cheat, Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        });
+
         mLightOnColor = ContextCompat.getColor(this, R.color.yellow);
         mLightOffColor = ContextCompat.getColor(this, R.color.black);
 
@@ -60,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setButtonColors() {
 
+        String onDesc = ContextCompat.getString(this, R.string.on);
+        String offDesc = ContextCompat.getString(this, R.string.off);
+
         for (int buttonIndex = 0; buttonIndex < mLightGrid.getChildCount(); buttonIndex++) {
             Button gridButton = (Button) mLightGrid.getChildAt(buttonIndex);
 
@@ -69,8 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
             if (mGame.isLightOn(row, col)) {
                 gridButton.setBackgroundColor(mLightOnColor);
+                gridButton.setContentDescription(onDesc);
             } else {
                 gridButton.setBackgroundColor(mLightOffColor);
+                gridButton.setContentDescription(offDesc);
             }
         }
     }
